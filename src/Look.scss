@@ -1,0 +1,129 @@
+.page-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 2rem;
+  background: #f7f9fb;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+
+  .block {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+
+    &.block-1 {
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        font-family: 'Fira Mono', monospace;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        resize: vertical;
+      }
+      .upload-label {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #2980b9;
+        cursor: pointer;
+      }
+      .error-msg {
+        color: #e74c3c;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    &.block-3 {
+      pre {
+        background: #f4f8fb;
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 0.95rem;
+        color: #34495e;
+        overflow-x: auto;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .knowledge-domains {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+  .domain-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+}
+
+.circle-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #0072c6;
+  position: relative;
+}
+
+.circle-icon .toggle-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #0072c6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.item-name {
+  margin-top: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+}
+
+
+/* App.scss */
+
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+//   background-image: url('your-background-image.jpg'); /* Add your background image */
+  background-size: cover;
+  min-height: 100vh;
+}
+
+// .block {
+//   background-color: white;
+//   border-radius: 10px;
+//   padding: 20px;
+//   margin: 20px;
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+// }
+
+
+
+
