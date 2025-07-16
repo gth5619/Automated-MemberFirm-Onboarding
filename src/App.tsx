@@ -1,4 +1,3 @@
-
 import React, { useState, ChangeEvent } from 'react';
 import './Look.scss';
 import AddedAvailableUI from './AddedAvailableUI';
@@ -195,50 +194,50 @@ function App() {
 
   return (
     <div className="page-layout">
+      <div className="blocks-container">
+        <div className="block block-1">
+          <h3>1. Paste or Upload JSON</h3>
+          <label className="upload-label">
+            <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileUpload} />
+            Upload JSON File
+          </label>
+          <textarea
+            value={inputJson}
+            onChange={handleJsonChange}
+            placeholder="Paste your JSON here..."
+          />
+          {error && <div className="error-msg">{error}</div>}
+          <button onClick={handleLoadJson}>Load JSON</button>
+        </div>
 
-      <div className="block block-1">
-        <h3>1. Paste or Upload JSON</h3>
-        <label className="upload-label">
-          <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileUpload} />
-          Upload JSON File
-        </label>
-        <textarea
-          value={inputJson}
-          onChange={handleJsonChange}
-          placeholder="Paste your JSON here..."
-        />
-        {error && <div className="error-msg">{error}</div>}
-        <button onClick={handleLoadJson}>Load JSON</button>
+        <div className="block block-2">
+          <h3>Interactive</h3>
+          <div style={{ marginBottom: '1rem' }}>
+            <select value={selectedCountry} onChange={handleCountryChange}>
+              <option value="">Select a Country</option>
+              {dataObj.arr.map((item) => (
+                <option key={item.country} value={item.country}>
+                  {item.country}
+                </option>
+              ))}
+            </select>
+          </div>
+          {selected && (
+            <CountryPictureUI
+              country={selectedCountry}
+              countryList={dataObj.arr.map(item => item.country)}
+              onCountryChange={handleCountryChange}
+              knowledgeDomains={selected?.knowledgeDomain || []}    
+            />
+          )}
+          <AddedAvailableUI
+            selected={selected}
+            selectedCountry={selectedCountry}
+            setDataObj={setDataObj}
+          />
+        </div>
       </div>
 
-      {/* Block 2: Interactive UI */}
-     <div className="block block-2">
-  <h3>Interactive</h3>
-  <div style={{ marginBottom: '1rem' }}>
-    <select value={selectedCountry} onChange={handleCountryChange}>
-      <option value="">Select a Country</option>
-      {dataObj.arr.map((item) => (
-        <option key={item.country} value={item.country}>
-          {item.country}
-        </option>
-      ))}
-    </select>
-  </div>
-  {selected && (
-    <CountryPictureUI
-     country={selectedCountry}
-  countryList={dataObj.arr.map(item => item.country)}
-  onCountryChange={handleCountryChange}
-  knowledgeDomains={selected?.knowledgeDomain || []}    />
-  )}
-  <AddedAvailableUI
-    selected={selected}
-    selectedCountry={selectedCountry}
-    setDataObj={setDataObj}
-  />
-</div>
-
-      {/* Block 3: Output JSON */}
       <div className="block block-3">
         <h3>3. Output JSON</h3>
         <button style={{ marginBottom: '1rem' }} onClick={handleDownload}>
