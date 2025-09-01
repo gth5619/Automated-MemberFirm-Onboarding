@@ -26,6 +26,7 @@ type UserFeature = {
 };
 
 type MemberFirm = {
+    defaultMemberFirm: string;
   country: string;
   memberFirm?: string;
   knowledgeDomain?: KnowledgeDomain[];
@@ -43,6 +44,15 @@ type ExtractedFirms = {
   rootKey: string | null;
   original: MemberFirmsRoot | MemberFirm[];
 };
+
+interface Country {
+  country: string;
+  defaultLanguage: string;
+  defaultMemberFirm: string;
+  publicationID: string;
+  publicationName: string;
+  knowledgeDomain: any[]; // Adjust type as needed
+}
 
 // Utility to flexibly extract the member firms array and remember the root key
 function extractMemberFirms(inputJson: MemberFirmsRoot | MemberFirm[]): ExtractedFirms {
@@ -115,6 +125,7 @@ function App() {
   const [newDomain, setNewDomain] = useState<{ name: string }>({ name: '' });
   const [newUserFeature, setNewUserFeature] = useState<{ name: string }>({ name: '' });
   const [newSiteFeature, setNewSiteFeature] = useState<{ domain: string; name: string }>({ domain: '', name: '' });
+  const [showBlock1, setShowBlock1] = useState(true);
 
   // Handle textarea input
   const handleJsonChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -192,9 +203,36 @@ function App() {
     outputJson = dataObj.arr;
   }
 
+   const [countries, setCountries] = useState<Country[]>([]);
+  const [showAddCountryModal, setShowAddCountryModal] = useState(false);
+
+  const handleAddCountry = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const newCountry: Country = {
+      country: (form.country as any).value,
+      defaultLanguage: (form.defaultLanguage as any).value,
+      defaultMemberFirm: (form.defaultMemberFirm as any).value,
+      publicationID: (form.publicationID as any).value,
+      publicationName: (form.publicationName as any).value,
+      knowledgeDomain: [],
+    };
+    setCountries([...countries, newCountry]);
+    setShowAddCountryModal(false);
+    form.reset();
+  };
   return (
     <div className="page-layout">
+
+      <button
+  className="hamburger-btn"
+  onClick={() => setShowBlock1((prev) => !prev)}
+  aria-label={showBlock1 ? "Hide sidebar" : "Show sidebar"}
+>
+</button>
+
       <div className="blocks-container">
+          {showBlock1 && (
         <div className="block block-1">
           <h3>1. Paste or Upload JSON</h3>
           <label className="upload-label">
@@ -209,9 +247,26 @@ function App() {
           {error && <div className="error-msg">{error}</div>}
           <button onClick={handleLoadJson}>Load JSON</button>
         </div>
-
-        <div className="block block-2">
+          )}
+       <div className={`block block-2 ${showBlock1 ? "" : "full-width"}`}>
           <h3>Interactive</h3>
+                  <button onClick={() => setShowAddCountryModal(true)}>Add Country</button>
+
+        {showAddCountryModal && (
+          <div className="modal">
+            <form onSubmit={handleAddCountry}>
+              <input name="country" placeholder="Country" required />
+              <input name="defaultLanguage" placeholder="Default Language" required />
+              <input name="defaultMemberFirm" placeholder="Default MemberFirm" required />
+              <input name="publicationID" placeholder="Publication ID" required />
+              <input name="publicationName" placeholder="Publication Name" required />
+              <button type="submit">Add Country</button>
+              <button type="button" onClick={() => setShowAddCountryModal(false)}>Cancel</button>
+            </form>
+          </div>
+        )}
+
+
           <div style={{ marginBottom: '1rem' }}>
             <select value={selectedCountry} onChange={handleCountryChange}>
               <option value="">Select a Country</option>
@@ -222,12 +277,14 @@ function App() {
               ))}
             </select>
           </div>
+
           {selected && (
             <CountryPictureUI
               country={selectedCountry}
               countryList={dataObj.arr.map(item => item.country)}
               onCountryChange={handleCountryChange}
-              knowledgeDomains={selected?.knowledgeDomain || []}    
+              knowledgeDomains={selected?.knowledgeDomain || []}
+               defaultMemberFirm={selected.defaultMemberFirm || ''}    
             />
           )}
           <AddedAvailableUI

@@ -42,6 +42,7 @@ type Props = {
   selected: MemberFirm | undefined;
   selectedCountry: string;
   setDataObj: React.Dispatch<React.SetStateAction<any>>;
+   // setDataObj: React.Dispatch<React.SetStateAction<DataObj>>;
 };
 
 const AddedAvailableUI: React.FC<Props> = ({ selected, selectedCountry, setDataObj }) => {
@@ -84,46 +85,98 @@ const AddedAvailableUI: React.FC<Props> = ({ selected, selectedCountry, setDataO
         {(selected.knowledgeDomain || []).length === 0 ? (
           <div className="empty-msg">None added</div>
         ) : (
-          (selected.knowledgeDomain || []).map((domain) => (
-            <div key={domain.name} className="domain-block">
-              <div className="domain-header">
-                <div className="circle-icon">{domain.name.charAt(0).toUpperCase()}</div>
-                <span className="domain-name">{domain.name}</span>
-                <button
-                  className="feature-btn remove-btn"
-                  onClick={() => {
-                    setDataObj((prev: any) => {
-                      const newArr = prev.arr.map((item: MemberFirm) =>
-                        item.country === selectedCountry
-                          ? {
-                              ...item,
-                              knowledgeDomain: (item.knowledgeDomain || []).filter(
-                                (d) => d.name !== domain.name
-                              ),
-                            }
-                          : item
-                      );
-                      return { ...prev, arr: newArr };
-                    });
-                  }}
-                >
-                  −
-                </button>
+           (selected.knowledgeDomain || []).map((domain) => {
+            // Label logic
+            let label = '';
+            if (domain.memberFirm === "17573177") {
+              label = "Gl";
+            } else if (
+              selected.defaultMemberFirm &&
+              domain.memberFirm === `17573177,${selected.defaultMemberFirm}`
+            ) {
+              label = "Gl + M";
+            }
+
+            return (
+              <div key={domain.name} className="domain-block">
+                <div className="domain-header">
+                  <div className="circle-icon">{domain.name.charAt(0).toUpperCase()}</div>
+                  <span className="domain-name">{domain.name}</span>
+                  {label && <span className="domain-label">{label}</span>}
+                  <select
+                    value={
+                      domain.memberFirm === "17573177"
+                        ? "global"
+                        : domain.memberFirm === `17573177,${selected.defaultMemberFirm}`
+                        ? "global_plus"
+                        : "memberfirm"
+                    }
+                    onChange={e => {
+                      setDataObj((prev:any) => {
+                        const newArr = prev.arr.map((item: MemberFirm) =>
+                          item.country === selectedCountry
+                            ? {
+                                ...item,
+                                knowledgeDomain: (item.knowledgeDomain || []).map((d) =>
+                                  d.name === domain.name
+                                    ? {
+                                        ...d,
+                                        memberFirm:
+                                          e.target.value === "global"
+                                            ? "17573177"
+                                            : e.target.value === "global_plus"
+                                            ? `17573177,${selected.defaultMemberFirm}`
+                                            : selected.defaultMemberFirm || ""
+                                      }
+                                    : d
+                                ),
+                              }
+                            : item
+                        );
+                        return { ...prev, arr: newArr };
+                      });
+                    }}
+                  >
+                    <option value="global">Gl</option>
+                    <option value="global_plus">Gl +M</option>
+                    <option value="memberfirm">M</option>
+                  </select>
+                  <button
+                    className="feature-btn remove-btn"
+                    onClick={() => {
+                      setDataObj((prev: any) => {
+                        const newArr = prev.arr.map((item: MemberFirm) =>
+                          item.country === selectedCountry
+                            ? {
+                                ...item,
+                                knowledgeDomain: (item.knowledgeDomain || []).filter(
+                                  (d) => d.name !== domain.name
+                                ),
+                              }
+                            : item
+                        );
+                        return { ...prev, arr: newArr };
+                      });
+                    }}
+                  >
+                    −
+                  </button>
+                </div>
+                <div className="site-features-list">
+                  <div className="site-features-title">Site Features:</div>
+                  {(domain.siteFeatures || []).length === 0 ? (
+                    <span className="empty-msg">None added</span>
+                  ) : (
+                    (domain.siteFeatures || []).map((sf) => (
+                      <span key={sf.name} className="site-feature-pill">
+                        {sf.name}
+                      </span>
+                    ))
+                  )}
+                </div>
               </div>
-              <div className="site-features-list">
-                <div className="site-features-title">Site Features:</div>
-                {(domain.siteFeatures || []).length === 0 ? (
-                  <span className="empty-msg">None added</span>
-                ) : (
-                  (domain.siteFeatures || []).map((sf) => (
-                    <span key={sf.name} className="site-feature-pill">
-                      {sf.name}
-                    </span>
-                  ))
-                )}
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
 
         <div className="section-title">Added User Features</div>
@@ -181,7 +234,7 @@ const AddedAvailableUI: React.FC<Props> = ({ selected, selectedCountry, setDataO
                               {
                                 ...domain,
                                 siteFeatures: [],
-                                memberFirm: item.defaultMemberFirm || '', 
+                                memberFirm: "17573177", // Default to Global, can be edited after
                               },
                             ],
                           }
