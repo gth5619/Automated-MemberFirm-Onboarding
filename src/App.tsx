@@ -223,56 +223,105 @@ function App() {
   };
   return (
     <div className="page-layout">
-
-      <button
-  className="hamburger-btn"
-  onClick={() => setShowBlock1((prev) => !prev)}
-  aria-label={showBlock1 ? "Hide sidebar" : "Show sidebar"}
->
-</button>
+      <header className="app-header">
+        <button
+          className="hamburger-btn"
+          onClick={() => setShowBlock1((prev) => !prev)}
+          aria-label={showBlock1 ? "Hide sidebar" : "Show sidebar"}
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+        <h1 className="app-title">Member Firm Onboarding</h1>
+      </header>
 
       <div className="blocks-container">
           {showBlock1 && (
         <div className="block block-1">
-          <h3>1. Paste or Upload JSON</h3>
-          <label className="upload-label">
-            <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileUpload} />
-            Upload JSON File
-          </label>
-          <textarea
-            value={inputJson}
-            onChange={handleJsonChange}
-            placeholder="Paste your JSON here..."
-          />
-          {error && <div className="error-msg">{error}</div>}
-          <button onClick={handleLoadJson}>Load JSON</button>
+          <h3>JSON Configuration</h3>
+          <div className="upload-section">
+            <label className="upload-label">
+              <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileUpload} />
+              <span className="upload-icon">📁</span>
+              Upload JSON File
+            </label>
+            <span className="upload-help">or paste JSON below</span>
+          </div>
+          <div className="textarea-container">
+            <textarea
+              value={inputJson}
+              onChange={handleJsonChange}
+              placeholder="Paste your JSON configuration here..."
+              className="json-textarea"
+            />
+          </div>
+          {error && <div className="error-message" role="alert">{error}</div>}
+          <button onClick={handleLoadJson} className="btn btn-primary load-btn">
+            <span>⚡</span> Load JSON
+          </button>
         </div>
           )}
        <div className={`block block-2 ${showBlock1 ? "" : "full-width"}`}>
-          <h3>Interactive</h3>
-                  <button onClick={() => setShowAddCountryModal(true)}>Add Country</button>
+          <div className="block-header">
+            <h3>Interactive Configuration</h3>
+            <button className="btn btn-primary" onClick={() => setShowAddCountryModal(true)}>
+              <span>+</span> Add Country
+            </button>
+          </div>
 
         {showAddCountryModal && (
-          <div className="modal">
-            <form onSubmit={handleAddCountry}>
-              <input name="country" placeholder="Country" required />
-              <input name="defaultLanguage" placeholder="Default Language" required />
-              <input name="defaultMemberFirm" placeholder="Default MemberFirm" required />
-              <input name="publicationID" placeholder="Publication ID" required />
-              <input name="publicationName" placeholder="Publication Name" required />
-              <button type="submit">Add Country</button>
-              <button type="button" onClick={() => setShowAddCountryModal(false)}>Cancel</button>
-            </form>
+          <div className="modal-overlay" onClick={() => setShowAddCountryModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Add New Country</h3>
+                <button 
+                  type="button" 
+                  className="modal-close-btn"
+                  onClick={() => setShowAddCountryModal(false)}
+                  aria-label="Close modal"
+                >
+                  ×
+                </button>
+              </div>
+              <form onSubmit={handleAddCountry} className="modal-form">
+                <div className="form-group">
+                  <label htmlFor="country">Country Code</label>
+                  <input id="country" name="country" placeholder="e.g., us, gb, ca" required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="defaultLanguage">Default Language</label>
+                  <input id="defaultLanguage" name="defaultLanguage" placeholder="e.g., en-US" required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="defaultMemberFirm">Default Member Firm</label>
+                  <input id="defaultMemberFirm" name="defaultMemberFirm" placeholder="e.g., 12345" required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="publicationID">Publication ID</label>
+                  <input id="publicationID" name="publicationID" placeholder="Enter publication ID" required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="publicationName">Publication Name</label>
+                  <input id="publicationName" name="publicationName" placeholder="Enter publication name" required />
+                </div>
+                <div className="modal-actions">
+                  <button type="submit" className="btn btn-primary">Add Country</button>
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowAddCountryModal(false)}>Cancel</button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
 
 
-          <div style={{ marginBottom: '1rem' }}>
-            <select value={selectedCountry} onChange={handleCountryChange}>
-              <option value="">Select a Country</option>
+          <div className="country-selection">
+            <label htmlFor="country-select" className="selection-label">Select Country:</label>
+            <select id="country-select" value={selectedCountry} onChange={handleCountryChange} className="country-select">
+              <option value="">Choose a country...</option>
               {dataObj.arr.map((item) => (
                 <option key={item.country} value={item.country}>
-                  {item.country}
+                  {item.country.toUpperCase()} - {item.defaultMemberFirm || 'No member firm'}
                 </option>
               ))}
             </select>
@@ -296,13 +345,17 @@ function App() {
       </div>
 
       <div className="block block-3">
-        <h3>3. Output JSON</h3>
-        <button style={{ marginBottom: '1rem' }} onClick={handleDownload}>
-          Download JSON
-        </button>
-        <pre>
-          {JSON.stringify(outputJson, null, 2)}
-        </pre>
+        <div className="block-header">
+          <h3>Output Configuration</h3>
+          <button className="btn btn-success download-btn" onClick={handleDownload}>
+            <span>💾</span> Download JSON
+          </button>
+        </div>
+        <div className="json-output-container">
+          <pre className="json-output">
+            {JSON.stringify(outputJson, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
   );
